@@ -2,40 +2,60 @@
 # functional_tests.py
 
 import csv
+import os
+import psutil
+import pyautogui
 import re
+import time
 import tkinter
+import tkinter.filedialog
 import unittest
+
+from attendance_organizer import AttendanceOrganizer
 
 class TestOrganizeAttendance(unittest.TestCase):
 
     def setUp(self):
-        self.root = tkinter.Tk()
-        self.root.attributes("-topmost", True)
-        self.root.title("Attendance Organizer")
+        #User opens attendance organizer application
+        self.organizer = AttendanceOrganizer()
 
     def tearDown(self):
-        self.root.destroy()
+        #User closes attendance organizer application
+        self.organizer.end_task_button.invoke()
 
     def verify_file_properties(self):
         pass
 
-    def test_file_upload_organize_and_download(self):
+    def test_attendance_organizer_window_operation(self):
         #User notices new tkinter window
-        self.assertEqual(self.root.state(), 'normal')
+        self.assertEqual(
+            self.organizer.root.state(), 'normal')
 
         #User notices window title
-        self.assertEqual(self.root.title(), "Attendance Organizer")
+        self.assertEqual(
+            self.organizer.root.title(), "Attendance Organizer")
 
         #User notices 'Upload File' button
+        self.assertEqual(
+            self.organizer.upload_file_button['state'], 'normal')
+
         #User clicks button and their computer's files appear
+        self.organizer.upload_file_button.invoke()
+        filepath = os.path.abspath(
+            os.path.join('tests', 'sample_attendance.csv'))
+        time.sleep(1)
+        pyautogui.typewrite(filepath)
+        print(filepath)
+        pyautogui.press('enter')
+        self.assertIn(
+            "explorer.exe", [p.name() for p in psutil.process_iter()])
+
         #User selects a file to be uploaded
         #Verify file properties
-        self.verify_file_properties()
 
         #Verification fails as user uploaded wrong file
         #User selects the correct file to be uploaded
         #Verify file properties
-        self.verify_file_properties()
 
         #Verification passes and file is uploaded
         #User notices path to file in an entry widget
@@ -46,6 +66,9 @@ class TestOrganizeAttendance(unittest.TestCase):
         #User notices new path to file in an entry widget
         #User notices 'Download File' button
         #User clicks button and the file downloads
+        #User notices 'End Task' button
+        self.assertEqual(
+            self.organizer.end_task_button['state'], 'normal')
 
 if __name__ == '__main__':
     unittest.main()
