@@ -39,7 +39,8 @@ class AttendanceOrganizer:
             self.root, text="End Task", command=self.end_task)
 
         self.download_file_button = tkinter.Button(
-            self.root, text="Download File", command=self.download_file)
+            self.root, text="Download File", state='disabled',
+            command=self.download_file)
         self.download_var = tkinter.StringVar(self.root)
         self.download_path = tkinter.Entry(
             self.root, textvariable=self.download_var, state='readonly',
@@ -52,6 +53,9 @@ class AttendanceOrganizer:
 
         self.organize_data_button.grid(row=1, column=0)
         self.details_entry.grid(row=1, column=1, sticky='w')
+
+        self.download_file_button.grid(row=2, column=0)
+        self.download_path.grid(row=2, column=1, sticky='w')
 
         self.root.mainloop()
 
@@ -75,7 +79,7 @@ class AttendanceOrganizer:
         self.organize_data_button.config(state='disabled')
         name_regex = re.compile(r'([A-Z][A-Za-z]+) ([A-Z][A-Za-z]+)')
         action_regex = re.compile(r'(Joined|Left)')
-        self.data = {}
+        data = {}
         for row in self.values:
             full_name = name_regex.search(row[0])
             action_name = action_regex.search(row[1])
@@ -93,14 +97,16 @@ class AttendanceOrganizer:
                 return
             time = dt_obj.strftime('%m.%d.%Y %H:%M:%S')
             key = f"{last}, {first}"
-            self.data.setdefault(key, {"Last": last, "First": first})
-            self.data[key].setdefault(action, time)
+            data.setdefault(key, {"Last": last, "First": first})
+            data[key].setdefault(action, time)
+        self.data = {k: data[k] for k in sorted(data)}
         self.details_var.set(
             value=f"Data Organized\t{self.details_var.get()}")
-        self.download_file_button.grid(row=2, column=0)
-        self.download_path.grid(row=2, column=1, sticky='w')
+        self.download_file_button.config(state='normal')
 
     def download_file(self):
+        self.details_var.set(
+            value=f"Select a location to save file\t{self.details_var.get()}")
         filetypes = [('Comma Separated Values', '.csv')]
         filepath = tkinter.filedialog.asksaveasfilename(
             parent=self.root, filetypes=filetypes)
@@ -111,6 +117,8 @@ class AttendanceOrganizer:
             writer.writeheader()
             for item in self.data:
                 writer.writerow(self.data[item])
+        self.details_var.set(
+            value=f"File Downloaded\t{self.details_var.get()}")
 
     def end_task(self):
         self.root.destroy()
