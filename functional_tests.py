@@ -3,13 +3,14 @@
 
 import csv
 import os
-import psutil
-import pyautogui
 import re
 import time
 import tkinter
 import tkinter.filedialog
 import unittest
+
+import psutil
+import pyautogui
 
 from attendance_organizer import AttendanceOrganizer
 
@@ -20,11 +21,11 @@ class TestOrganizeAttendance(unittest.TestCase):
         self.organizer = AttendanceOrganizer()
 
     def tearDown(self):
-        #User closes attendance organizer application
+        #User clicks button and the attendance organizer application closes
         self.organizer.end_task_button.invoke()
 
-    def verify_file_properties(self):
-        pass
+        #Delete produced file
+        os.remove(os.path.join('.', 'tests', 'new_sample_attendance.csv'))
 
     def test_attendance_organizer_window_operation(self):
         #User notices new tkinter window
@@ -39,33 +40,50 @@ class TestOrganizeAttendance(unittest.TestCase):
         self.assertEqual(
             self.organizer.upload_file_button['state'], 'normal')
 
+        #User notices 'Organize Data' button which is disabled
+        self.assertEqual(
+            self.organizer.organize_data_button['state'], 'disabled')
+
         #User clicks button and their computer's files appear
         self.organizer.upload_file_button.invoke()
-        filepath = os.path.abspath(
-            os.path.join('tests', 'sample_attendance.csv'))
-        time.sleep(1)
-        pyautogui.typewrite(filepath)
-        print(filepath)
-        pyautogui.press('enter')
         self.assertIn(
             "explorer.exe", [p.name() for p in psutil.process_iter()])
 
         #User selects a file to be uploaded
-        #Verify file properties
+        filepath = os.path.abspath(
+            os.path.join('.', 'tests', 'sample_attendance.csv'))
+        pyautogui.PAUSE = 2.5
+        pyautogui.hotkey('alt', 'd')
+        pyautogui.typewrite(filepath)
+        pyautogui.hotkey('enter')
 
-        #Verification fails as user uploaded wrong file
-        #User selects the correct file to be uploaded
-        #Verify file properties
-
-        #Verification passes and file is uploaded
         #User notices path to file in an entry widget
-        #User notices 'Organize Attendance' button
+        self.assertEqual(
+            filepath, self.organizer.upload_var.get())
+
+        #User notices 'Organize Data' button is not disabled
+        self.assertEqual(
+            self.organizer.upload_file_button['state'], 'normal')
+
         #User clicks button and file starts to organize
-        #User notices loading bar, which increases as process continues
-        #When organization is completed, notification pops up
-        #User notices new path to file in an entry widget
-        #User notices 'Download File' button
-        #User clicks button and the file downloads
+        self.organizer.organize_data_button.invoke()
+
+        #User notices 'Download Data' button appear
+        self.assertEqual(
+            self.organizer.download_file_button['state'], 'normal')
+
+        #User clicks button and their computer's files appear
+        self.organizer.download_file_button.invoke()
+        self.assertIn(
+            "explorer.exe", [p.name() for p in psutil.process_iter()])
+
+        #User submits a path to download the file
+        filepath = os.path.abspath(
+            os.path.join('.', 'tests', 'new_sample_attendance.csv'))
+
+        #User notices the new file appears in the computer's files
+        self.assertTrue(os.path.exists(filepath))
+
         #User notices 'End Task' button
         self.assertEqual(
             self.organizer.end_task_button['state'], 'normal')
