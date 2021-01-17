@@ -99,7 +99,7 @@ class AttendanceOrganizer:
                 self.data = {}
                 self.details_var.set(
                     value="An error occurred while processing the data. "
-                    "Check to make sure the file is correct")
+                    "Please make sure the correct file was uploaded.")
             try:
                 first, last = full_name.group(1), full_name.group(2)
                 action = action_name.group(1).title()
@@ -127,7 +127,7 @@ class AttendanceOrganizer:
         filepath = tkinter.filedialog.asksaveasfilename(
             parent=self.root, filetypes=filetypes, initialdir=os.getcwd())
         self.download_var.set(value=filepath)
-        with open(f"{filepath}.csv", 'w', newline='') as file:
+        with open(f"{filepath}.csv", 'w', encoding='utf-16', newline='') as file:
             fieldnames = ["Last", "First", "Joined", "Left"]
             writer = csv.DictWriter(
                 file, fieldnames=fieldnames, delimiter='\t')
