@@ -3,15 +3,11 @@
 
 import csv
 import datetime
-import logging
 import os
 import re
 import tkinter
 import tkinter.filedialog
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format=' %(asctime)s - %(levelname)s - %(message)s')
 class AttendanceOrganizer:
     def __init__(self):
         self.root = tkinter.Tk()

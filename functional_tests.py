@@ -2,11 +2,9 @@
 # functional_tests.py
 
 import csv
-import logging
 import os
 import re
 import threading
-import time
 import tkinter
 import tkinter.filedialog
 import unittest
@@ -15,10 +13,6 @@ import psutil
 import pyautogui
 
 from attendance_organizer import AttendanceOrganizer
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    format=' %(asctime)s - %(levelname)s - %(message)')
 
 class TestOrganizeAttendance(unittest.TestCase):
 
