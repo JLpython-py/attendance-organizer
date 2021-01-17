@@ -2,50 +2,126 @@
 # functional_tests.py
 
 import csv
+import os
 import re
+import threading
 import tkinter
+import tkinter.filedialog
 import unittest
+
+import psutil
+import pyautogui
+
+from attendance_organizer import AttendanceOrganizer
 
 class TestOrganizeAttendance(unittest.TestCase):
 
     def setUp(self):
-        self.root = tkinter.Tk()
-        self.root.attributes("-topmost", True)
-        self.root.title("Attendance Organizer")
+        #User opens attendance organizer application
+        self.organizer = AttendanceOrganizer()
 
     def tearDown(self):
-        self.root.destroy()
+        #User clicks button and the attendance organizer application closes
+        self.organizer.end_task_button.invoke()
 
-    def verify_file_properties(self):
-        pass
+        #Delete produced file
+        os.remove(os.path.join('.', 'tests', 'new_sample_attendance.csv'))
 
-    def test_file_upload_organize_and_download(self):
+    def automate_file_dialogue(self, filepath):
+        while "explorer.exe" not in [p.name() for p in psutil.process_iter()]:
+            continue
+        directory, filename = os.path.split(filepath)
+        pyautogui.hotkey('alt', 'd')
+        pyautogui.typewrite(directory)
+        pyautogui.hotkey('enter')
+        pyautogui.hotkey('tab')
+        pyautogui.hotkey('tab')
+        pyautogui.hotkey('tab')
+        pyautogui.hotkey('alt', 'n')
+        pyautogui.typewrite(filename)
+        pyautogui.hotkey('enter')
+        
+    def test_attendance_organizer_window_operation(self):
         #User notices new tkinter window
-        self.assertEqual(self.root.state(), 'normal')
+        self.assertEqual(
+            self.organizer.root.state(), 'normal')
 
         #User notices window title
-        self.assertEqual(self.root.title(), "Attendance Organizer")
+        self.assertEqual(
+            self.organizer.root.title(), "Attendance Organizer")
 
         #User notices 'Upload File' button
-        #User clicks button and their computer's files appear
-        #User selects a file to be uploaded
-        #Verify file properties
-        self.verify_file_properties()
+        self.assertEqual(
+            self.organizer.upload_file_button['state'], 'normal')
 
-        #Verification fails as user uploaded wrong file
-        #User selects the correct file to be uploaded
-        #Verify file properties
-        self.verify_file_properties()
+        #User notices 'Organize Data' button which is disabled
+        self.assertEqual(
+            self.organizer.organize_data_button['state'], 'disabled')
 
-        #Verification passes and file is uploaded
+        #User clicks button and select path to upload
+        filepath = os.path.abspath(
+            os.path.join('tests', 'sample_attendance.csv'))
+        upload_thread = threading.Thread(
+            target=self.automate_file_dialogue, args=(filepath,))
+        upload_thread.start()
+        self.assertTrue(os.path.exists(filepath))
+        self.organizer.upload_file_button.invoke()
+        self.assertIn(
+            "explorer.exe", [p.name() for p in psutil.process_iter()])
+        upload_thread.join()
+
         #User notices path to file in an entry widget
-        #User notices 'Organize Attendance' button
+        self.assertEqual(
+            os.path.normpath(filepath),
+            os.path.normpath(self.organizer.upload_var.get()))
+
+        #User notices 'Organize Data' button is not disabled
+        self.assertEqual(
+            self.organizer.upload_file_button['state'], 'normal')
+
         #User clicks button and file starts to organize
-        #User notices loading bar, which increases as process continues
-        #When organization is completed, notification pops up
-        #User notices new path to file in an entry widget
-        #User notices 'Download File' button
-        #User clicks button and the file downloads
+        self.organizer.organize_data_button.invoke()
+
+        #User notices 'Download Data' button appear
+        self.assertEqual(
+            self.organizer.download_file_button['state'], 'normal')
+
+        #User clicks button and selects path to download
+        filepath = os.path.abspath(
+            os.path.join('tests', 'new_sample_attendance'))
+        download_thread = threading.Thread(
+            target=self.automate_file_dialogue, args=(filepath,))
+        download_thread.start()
+        self.assertFalse(os.path.exists(filepath))
+        self.organizer.download_file_button.invoke()
+        self.assertIn(
+            "explorer.exe", [p.name() for p in psutil.process_iter()])
+        download_thread.join()
+
+        #User notices 'Reset' button
+        self.assertEqual(
+            self.organizer.reset_button['state'], 'normal')
+
+        #User clicks button and notices window is reset
+        self.organizer.reset_button.invoke()
+        self.assertEqual(
+            self.organizer.status_var.get(), '')
+        self.assertEqual(
+            self.organizer.details_var.get(), '')
+        self.assertEqual(
+            self.organizer.upload_file_button['state'], 'normal')
+        self.assertEqual(
+            self.organizer.upload_var.get(), '')
+        self.assertEqual(
+            self.organizer.organize_data_button['state'], 'disabled')
+        self.assertEqual(
+            self.organizer.download_file_button['state'], 'disabled')
+        self.assertEqual(
+            self.organizer.download_var.get(), '')
+        
+        #User notices 'End Task' button
+        self.assertEqual(
+            self.organizer.end_task_button['state'], 'normal')
 
 if __name__ == '__main__':
     unittest.main()
