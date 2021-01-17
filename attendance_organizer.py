@@ -75,7 +75,8 @@ class AttendanceOrganizer:
             return
         self.upload_var.set(value=filepath)
         self.details_var.set(
-            value=f"File Uploaded\t{self.details_var.get()}")
+            value="File Uploaded {}".format(
+                self.details_var.get()))
         with open(filepath, encoding='utf-16') as file:
             self.values = list(csv.reader(file, delimiter='\t'))
             del self.values[0]
@@ -112,22 +113,25 @@ class AttendanceOrganizer:
             except ValueError:
                 self.data = {}
                 return
-            key = f"{last}, {first}"
+            key = ', '.join([first, last])
             data.setdefault(key, {"Last": last, "First": first})
             data[key].setdefault(action, time)
         self.data = {k: data[k] for k in sorted(data)}
         self.details_var.set(
-            value=f"Data Organized\t{self.details_var.get()}")
+            value="Data Organized\t{}".format(
+                self.details_var.get()))
         self.download_file_button.config(state='normal')
 
     def download_file(self):
         self.details_var.set(
-            value=f"Select a location to save file\t{self.details_var.get()}")
+            value="Select a location to save file\t{}".format(
+                self.details_var.get()))
         filetypes = [('Comma Separated Values', '.csv')]
         filepath = tkinter.filedialog.asksaveasfilename(
             parent=self.root, filetypes=filetypes, initialdir=os.getcwd())
         self.download_var.set(value=filepath)
-        with open(f"{filepath}.csv", 'w', encoding='utf-16', newline='') as file:
+        filename = "{}.csv".format(filepath)
+        with open(filename, 'w', encoding='utf-16', newline='') as file:
             fieldnames = ["Last", "First", "Joined", "Left"]
             writer = csv.DictWriter(
                 file, fieldnames=fieldnames, delimiter='\t')
@@ -135,7 +139,8 @@ class AttendanceOrganizer:
             for item in self.data:
                 writer.writerow(self.data[item])
         self.details_var.set(
-            value=f"File Downloaded\t{self.details_var.get()}")
+            value="File Downloaded\t{}".format(
+                self.details_var.get()))
 
     def end_task(self):
         self.root.destroy()
