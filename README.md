@@ -1,8 +1,6 @@
 # attendance-organizer
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/JLpython-py/attendance-organizer)
-![GitHub all releases](https://img.shields.io/github/downloads/JLpython-py/attendance-organizer/total)
-![GitHub release (by tag)](https://img.shields.io/github/downloads/JLpython-py/attendance-organizer/v1.1.1/total)
 ![GitHub last commit](https://img.shields.io/github/last-commit/JLpython-py/attendance-organizer)
 ![GitHub](https://img.shields.io/github/license/JLpython-py/attendance-organizer)
 
