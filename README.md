@@ -1,5 +1,11 @@
 # attendance-organizer
 
+![GitHub repo size](https://img.shields.io/github/repo-size/JLpython-py/attendance-organizer)
+![GitHub all releases](https://img.shields.io/github/downloads/JLpython-py/attendance-organizer/total)
+![GitHub release (by tag)](https://img.shields.io/github/downloads/JLpython-py/attendance-organizer/v1.1.1/total)
+![GitHub last commit](https://img.shields.io/github/last-commit/JLpython-py/attendance-organizer)
+![GitHub](https://img.shields.io/github/license/JLpython-py/attendance-organizer)
+
 ![attendance-organizer Logo](https://user-images.githubusercontent.com/72679601/104869490-0478e700-58fb-11eb-9c0c-5e9401d5d33e.png)
 
 In Microsoft Teams meetings, hosts can download the attendance as a CSV. However, the CSV layout is somewhat messy and is in order of attendee first name, as opposed to the commonly used last name. The script, `attendance_organizer.py`, rewrites the data into a cleaner CSV file.
