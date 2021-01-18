@@ -113,10 +113,10 @@ class AttendanceOrganizer:
             except ValueError:
                 self.data = {}
                 return
-            key = ', '.join([first, last])
+            key = ', '.join([last, first])
             data.setdefault(key, {"Last": last, "First": first})
             data[key].setdefault(action, time)
-        self.data = {k: data[k] for k in sorted(data)}
+        self.data = {k: data[k] for k in sorted(list(data))}
         self.details_var.set(
             value="Data Organized\t{}".format(
                 self.details_var.get()))
