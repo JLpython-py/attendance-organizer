@@ -6,7 +6,7 @@ In Microsoft Teams meetings, hosts can download the attendance as a CSV. However
 
 <h1>Installation</h1>
 
-![Download the Latest Release](https://github.com/JLpython-py/attendance-organizer/releases)
+[Download the Latest Release](https://github.com/JLpython-py/attendance-organizer/releases)
 
 An executable file for `attendance_organizer.py` is available in the _dist/_ directory of the repository. Currently, only Windows is supported for a standalone application for this script.
 
