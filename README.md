@@ -34,4 +34,4 @@ An executable file for `attendance_organizer.py` is available in the _dist/_ dir
 - **End Task**: Quits the application
 - **Reset**: Resets the window and all its widgets to its original state
 
-And in-depth tutorial for working with this application can be found in the repository's Wiki
+And in-depth tutorial for working with this application can be found in the repository's Wiki, [here](https://github.com/JLpython-py/attendance-organizer/wiki/Tutorial).
