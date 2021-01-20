@@ -22,6 +22,9 @@ An executable file for `attendance_organizer.py` is available in the _dist/_ dir
 
 <h1>Usage</h1>
 
+- From the Command Line: Run `python attendance_organizer.py`
+- Using the executable file: In *dist/*, double-click **attendance_organizer.exe**
+
 ![tkinter Window](https://user-images.githubusercontent.com/72679601/104860197-1351a080-58df-11eb-8bc8-5c3b71bf90d3.png)
 
 `attendance_organizer.py` allows the user to interact with a `tkinter` GUI window to execute various functions.
