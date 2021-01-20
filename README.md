@@ -12,6 +12,8 @@ In Microsoft Teams meetings, hosts can download the attendance as a CSV. However
 
 [Download the Latest Release](https://github.com/JLpython-py/attendance-organizer/releases)
 
+- From the Command Line: Run `pip install -r requirements.txt`
+
 An executable file for `attendance_organizer.py` is available in the _dist/_ directory of the repository. Currently, only Windows is supported for a standalone application for this script.
 
 ![Script Executable](https://user-images.githubusercontent.com/72679601/104860422-56604380-58e0-11eb-9776-86a051c65fa5.png)
