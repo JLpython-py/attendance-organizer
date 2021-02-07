@@ -25,12 +25,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+import os
 import tkinter
+import tkinter.filedialog
 
 from attendance_organizer import Organizer
 
 
-class Widget(Organizer):
+class Interface(Organizer):
 
     def __init__(self):
         super().__init__()
@@ -61,7 +63,7 @@ class Widget(Organizer):
 
         self.organize_button = tkinter.Button(
             self.root, text="Organize Data",
-            state="disabled", command=self.organize
+            state="disabled", command=self.organize_data
         )
 
         self.end_task_button = tkinter.Button(
@@ -79,7 +81,7 @@ class Widget(Organizer):
         )
 
         self.reset_button = tkinter.Button(
-            self.root, text="Reset", command=self.reset_widget
+            self.root, text="Reset", command=self.reset_interface
         )
 
     def display(self):
@@ -97,15 +99,66 @@ class Widget(Organizer):
         self.root.mainloop()
 
     def upload_file(self):
-        pass
+        self.details_var.set(
+            value="Select a file to upload."
+        )
+        filepath = tkinter.filedialog.askopenfilename(
+            parent=self.root,
+            filetypes=[("Commad Separated Values", ".csv")],
+            initialdir=os.path.join(
+                os.path.expanduser('~'), 'downloads'
+            )
+        )
+        self.upload(filepath)
+        self.upload_var.set(value=filepath)
+        self.details_var.set(
+            value="File Uploaded.\t{}".format(
+                self.details_var.get()
+            )
+        )
+        self.organize_button.config(state='normal')
+
+    def organize_data(self):
+        self.organize_button.config(state='disabled')
+        self.organize()
+        self.details_var.set(
+            value="Data Organized.\t{}".format(
+                self.details_var.get()
+            )
+        )
+        self.download_button.config(state='normal')
 
     def download_file(self):
-        pass
+        self.details_var.set(
+            value="Select a location to save the file.\t{}".format(
+                self.details_var.get()
+            )
+        )
+        filepath = tkinter.filedialog.asksaveasfilename(
+            parent=self.root,
+            filetypes=[("Comma Separated Values", ".csv")],
+            initialdir=os.path.join(
+                os.path.expanduser('~'), 'downloads'
+            )
+        )
+        self.download("{}.csv".format(filepath))
+        self.download_var.set(value=filepath)
+        self.details_var.set(
+            value="File Downloaded.\t{}".format(
+                self.details_var.get()
+            )
+        )
 
-    def reset_widget(self):
-        pass
+    def reset_interface(self):
+        self.status_var.set('')
+        self.details_var.set('')
+        self.upload_button.config(state='normal')
+        self.upload_var.set('')
+        self.organize_button.config(state='disabled')
+        self.download_button.config(state='disabled')
+        self.download_var.set('')
 
 
 if __name__ == '__main__':
-    widget = Widget()
-    widget.display()
+    interface = Interface()
+    interface.display()
