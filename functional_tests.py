@@ -1,12 +1,37 @@
 #! python3
 # functional_tests.py
 
+"""
+Functional tests for attendance_organizer module
+==============================================================================
+MIT License
+
+Copyright (c) 2021 Jacob Lee
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import os
 import threading
 import time
 import unittest
 
-import psutil
 import pyautogui
 
 from attendance_organizer import Organizer
@@ -14,13 +39,14 @@ import application
 
 
 class TestAttendanceOrganizer(unittest.TestCase):
-
+    """ Functiona test for attendance_organizer module
+"""
     def setUp(self):
         self.organizer = Organizer()
 
     def tearDown(self):
-        if os.path.exists("tests/result.csv"):
-            os.remove("tests/result.csv")
+        if os.path.exists("tests/results.csv"):
+            os.remove("tests/results.csv")
 
     def test_module(self):
         # Uploading nonexistent file throws error
@@ -49,29 +75,33 @@ class TestAttendanceOrganizer(unittest.TestCase):
         self.organizer.organize()
 
         # Download resultant data as file
-        self.organizer.download("tests/result.csv")
+        self.organizer.download("tests/results.csv")
+
+
+def automate_file_dialogue(filepath):
+    # Wait for tkinter file dialogue to open
+    time.sleep(2)
+    directory, filename = os.path.split(filepath)
+    # Enter directory into File Explorer adress search bar
+    pyautogui.hotkey('alt', 'd')
+    pyautogui.typewrite(directory)
+    pyautogui.hotkey('enter')
+    # Enter filename into filename search bar
+    pyautogui.hotkey('alt', 'n')
+    pyautogui.typewrite(filename)
+    pyautogui.hotkey('enter')
 
 
 class TestGUI(unittest.TestCase):
-
+    """ Functional test for attendance_organizer GUI wrapper
+"""
     def setUp(self):
         self.interface = application.Interface()
 
     def tearDown(self):
         self.interface.end_task_button.invoke()
-
-    def automate_file_dialogue(self, filepath):
-        # Wait for tkinter file dialogue to open
-        time.sleep(2)
-        directory, filename = os.path.split(filepath)
-        # Enter directory into File Explorer adress search bar
-        pyautogui.hotkey('alt', 'd')
-        pyautogui.typewrite(directory)
-        pyautogui.hotkey('enter')
-        # Enter filename into filename search bar
-        pyautogui.hotkey('alt', 'n')
-        pyautogui.typewrite(filename)
-        pyautogui.hotkey('enter')
+        if os.path.exists("tests/results.csv"):
+            os.remove("tests/results.csv")
 
     def test_tkinter_interface(self):
         # tkinter application opens
@@ -105,7 +135,7 @@ class TestGUI(unittest.TestCase):
             os.path.join('tests', 'sample.csv')
         )
         upload_thread = threading.Thread(
-            target=self.automate_file_dialogue,
+            target=automate_file_dialogue,
             args=(filepath,)
         )
         upload_thread.start()
@@ -142,7 +172,7 @@ class TestGUI(unittest.TestCase):
             os.path.join('tests', 'results')
         )
         download_thread = threading.Thread(
-            target=self.automate_file_dialogue,
+            target=automate_file_dialogue,
             args=(filepath,)
         )
         download_thread.start()

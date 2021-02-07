@@ -3,3 +3,6 @@ __pycache__/
 repository_logo.png
 .idea
 attendance_organizer/__pycache__
+build
+dist
+*.spec

@@ -2,6 +2,23 @@
 # attendance_organizer/__init__.py
 
 """
+Rewrites Microsoft TEAMS attendance CSV files
+    - Person names are changed from "First Last" to "Last, First"
+        - Organized alphabetically
+    - Separate rows for actions are replaced by a column for each action
+        - Time of action is listed in column of corresponding action
+    - Edit time format
+==============================================================================
+Example: (Data is taken from tests/sample.csv)
+Last	First	Joined	Left
+Five	Member	12.08.2020 12:17:37	12.082020 12:43:55
+Four	Member	12.08.2020 12:17:37	12.082020 12:39:52
+One	Member	12.08.2020 12:17:37	12.082020 12:40:27
+Owner	Meeting	12.08.2020 12:17:37
+Three	Member	12.08.2020 12:17:37	12.082020 12:47:16
+Two	Member	12.08.2020 12:17:37	12.082020 12:44:02
+Zero	Member	12.08.2020 12:17:37	12.082020 12:48:51
+==============================================================================
 MIT License
 
 Copyright (c) 2021 Jacob Lee
@@ -32,7 +49,8 @@ import re
 
 
 class Organizer:
-
+    """ Reorganize data contained in Microsoft TEAMS attendance CSV file
+"""
     def __init__(self):
         self.upload_path = ""
         self.download_path = ""
@@ -40,13 +58,20 @@ class Organizer:
         self.data = {}
 
     class ImproperFileTypeError(Exception):
+        """ Raised when the file provided cannot be re-written
 
+        Arguments:
+            filepath -- The path to the file which caused the error
+            process -- The process which the program attempted to run
+"""
         def __init__(self, filepath, process):
             self.filepath = filepath
             self.message = f"Cannot process file: {self.filepath} (On file {process})"
             super().__init__(self.message)
 
     def upload(self, filepath):
+        """ Reads and stores the data in the CSV file
+"""
         if not (
             filepath and os.path.splitext(filepath)[-1] == '.csv'
         ):
@@ -60,6 +85,8 @@ class Organizer:
             del self.values[0]
 
     def organize(self):
+        """ Reorganizes the data stored in the original CSV file
+"""
         name_regex = re.compile(r'([A-Z][A-Za-z]+) ([A-Z][A-Za-z]+)')
         action_regex = re.compile(r'(Joined|Left)')
         dt_format = '%m/%d/%Y, %I:%M:%S %p'
@@ -72,12 +99,12 @@ class Organizer:
                 action = raw_action.group(1).title()
                 time = datetime.datetime.strptime(
                     row[2], dt_format
-                ).strftime('%m.%d%Y %H:%M:%S')
-            except (AttributeError, IndexError, ValueError):
+                ).strftime('%m.%d.%Y %H:%M:%S')
+            except (AttributeError, IndexError, ValueError) as error:
                 raise self.ImproperFileTypeError(
                     self.upload_path,
                     "organize",
-                )
+                ) from error
             key = ', '.join([last, first])
             data.setdefault(
                 key, {"Last": last, "First": first}
@@ -86,6 +113,8 @@ class Organizer:
         self.data = {k: data[k] for k in sorted(list(data))}
 
     def download(self, filepath):
+        """ Writes the reorganized data to a CSV file
+"""
         if not (
             os.path.splitext(filepath)[-1] == '.csv'
         ):
