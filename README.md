@@ -14,10 +14,7 @@ The `attendance_organizer` module reads the data in these CSV files and rewrites
 
 [Download the Latest Release](https://github.com/JLpython-py/attendance-organizer/releases)
 
-- From the Command Line: Run `pip install -r requirements.txt`
-
-An executable file for `application.py` is available. 
-Currently, only Windows is supported for a standalone application for this script.
+- From the Command Line: Run `pip install -r requirements.txt`.
 
 <h2>Requirements</h2>
 
@@ -44,11 +41,13 @@ python application.py
 
 <h3>Application Executable</h3>
 
-Launch **application.exe**
+An executable file for `application.py` is available. 
+Currently, only Windows is supported for a standalone application for this script.
+To run, simply launcher `application.exe`.
 
 <h2>Application View</h2>
 
-![tkinter Window](https://user-images.githubusercontent.com/72679601/107161150-9a7abd00-694f-11eb-8145-0dc6facc1b94.png)
+![tkinter Window](https://user-images.githubusercontent.com/72679601/107605885-51de3080-6be9-11eb-8de7-44e66847eaa4.png)
 
 `application.py` allows the user to interact with a `tkinter` GUI window to execute various functions.
 
