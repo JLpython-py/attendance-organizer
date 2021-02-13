@@ -112,7 +112,15 @@ class Interface(Organizer):
                 os.path.expanduser('~'), 'downloads'
             )
         )
-        self.upload(filepath)
+        try:
+            self.upload(filepath)
+        except self.ImproperFileTypeError:
+            self.details_var.set(
+                value="File failed to upload.\t{}".format(
+                    self.details_var.get()
+                )
+            )
+            return
         self.upload_var.set(value=filepath)
         self.details_var.set(
             value="File Uploaded.\t{}".format(
@@ -123,7 +131,15 @@ class Interface(Organizer):
 
     def organize_data(self):
         self.organize_button.config(state='disabled')
-        self.organize()
+        try:
+            self.organize()
+        except self.ImproperFileTypeError:
+            self.details_var.set(
+                value="File failed to upload.\t{}".format(
+                    self.details_var.get()
+                )
+            )
+            return
         self.details_var.set(
             value="Data Organized.\t{}".format(
                 self.details_var.get()
@@ -144,7 +160,15 @@ class Interface(Organizer):
                 os.path.expanduser('~'), 'downloads'
             )
         )
-        self.download("{}.csv".format(filepath))
+        try:
+            self.download("{}.csv".format(filepath))
+        except self.ImproperFileTypeError:
+            self.details_var.set(
+                value="File failed to download.\t{}".format(
+                    self.details_var.get()
+                )
+            )
+            return
         self.download_var.set(value=filepath)
         self.details_var.set(
             value="File Downloaded.\t{}".format(
