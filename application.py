@@ -2,8 +2,8 @@
 # widget.py
 
 """
-A tkinter application wrapper for attendance_organizer/__init__.py
-Allows user to work with attendance_organizer/__init__.py functions as a GUI
+A tkinter application wrapper for attendance_organizer module
+Allows user to work with Organizer classmethods as a GUI
 ==============================================================================
 MIT License
 

@@ -9,15 +9,15 @@ Rewrites Microsoft TEAMS attendance CSV files
         - Time of action is listed in column of corresponding action
     - Edit time format
 ==============================================================================
-Example: (Data is taken from tests/sample.csv)
+Example Rewritten Data: (Data is taken from tests/sample.csv)
 Last	First	Joined	Left
-Five	Member	12.08.2020 12:17:37	12.082020 12:43:55
-Four	Member	12.08.2020 12:17:37	12.082020 12:39:52
-One	Member	12.08.2020 12:17:37	12.082020 12:40:27
+Five	Member	12.08.2020 12:17:37	12.08.2020 12:43:55
+Four	Member	12.08.2020 12:17:37	12.08.2020 12:39:52
+One	Member	12.08.2020 12:17:37	12.08.2020 12:40:27
 Owner	Meeting	12.08.2020 12:17:37
-Three	Member	12.08.2020 12:17:37	12.082020 12:47:16
-Two	Member	12.08.2020 12:17:37	12.082020 12:44:02
-Zero	Member	12.08.2020 12:17:37	12.082020 12:48:51
+Three	Member	12.08.2020 12:17:37	12.08.2020 12:47:16
+Two	Member	12.08.2020 12:17:37	12.08.2020 12:44:02
+Zero	Member	12.08.2020 12:17:37	12.08.2020 12:48:51
 ==============================================================================
 MIT License
 
