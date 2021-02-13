@@ -70,7 +70,7 @@ class Organizer:
             super().__init__(self.message)
 
     def upload(self, filepath):
-        """ Reads and stores the data in the CSV file
+        """ Read store data contained in CSV file
 """
         if not (
             filepath and os.path.splitext(filepath)[-1] == '.csv'
@@ -85,7 +85,7 @@ class Organizer:
             del self.values[0]
 
     def organize(self):
-        """ Reorganizes the data stored in the original CSV file
+        """ Reorganize data stored in the original CSV file
 """
         name_regex = re.compile(r'([A-Z][A-Za-z]+) ([A-Z][A-Za-z]+)')
         action_regex = re.compile(r'(Joined|Left)')
@@ -113,7 +113,7 @@ class Organizer:
         self.data = {k: data[k] for k in sorted(list(data))}
 
     def download(self, filepath):
-        """ Writes the reorganized data to a CSV file
+        """ Write reorganized data to a CSV file
 """
         if not (
             os.path.splitext(filepath)[-1] == '.csv'

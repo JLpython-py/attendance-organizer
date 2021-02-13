@@ -36,7 +36,7 @@ from attendance_organizer import Organizer
 
 
 class Interface(Organizer):
-
+    """ Create a GUI for user and process user input"""
     def __init__(self):
         super().__init__()
 
@@ -88,6 +88,8 @@ class Interface(Organizer):
         )
 
     def display(self):
+        """ Grid all widgets to the application root
+"""
         self.upload_button.grid(row=0, column=0, sticky="w")
         self.upload_entry.grid(row=0, column=1, sticky="w")
         self.end_task_button.grid(row=0, column=2, sticky="e")
@@ -102,6 +104,8 @@ class Interface(Organizer):
         self.root.mainloop()
 
     def upload_file(self):
+        """ Prompt user to open file and call the upload classmethod
+"""
         self.details_var.set(
             value="Select a file to upload."
         )
@@ -130,6 +134,8 @@ class Interface(Organizer):
         self.organize_button.config(state='normal')
 
     def organize_data(self):
+        """ Call the organize classmethod
+"""
         self.organize_button.config(state='disabled')
         try:
             self.organize()
@@ -148,6 +154,8 @@ class Interface(Organizer):
         self.download_button.config(state='normal')
 
     def download_file(self):
+        """ Prompt user to select file download location and call the download classmethod
+"""
         self.details_var.set(
             value="Select a location to save the file.\t{}".format(
                 self.details_var.get()
@@ -177,6 +185,8 @@ class Interface(Organizer):
         )
 
     def reset_interface(self):
+        """ Revert application to original state
+"""
         self.status_var.set('')
         self.details_var.set('')
         self.upload_button.config(state='normal')
