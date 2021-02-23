@@ -2,8 +2,8 @@
 # widget.py
 
 """
-A tkinter application wrapper for attendance_organizer/__init__.py
-Allows user to work with attendance_organizer/__init__.py functions as a GUI
+A tkinter application wrapper for attendance_organizer module
+Allows user to work with Organizer classmethods as a GUI
 ==============================================================================
 MIT License
 
@@ -36,25 +36,29 @@ from attendance_organizer import Organizer
 
 
 class Interface(Organizer):
-
+    """ Create a GUI for user and process user input"""
     def __init__(self):
         super().__init__()
 
+        # Initiate tkinter window
         self.root = tkinter.Tk()
         self.root.attributes("-topmost", True)
         self.root.title("Attendance Organizer")
 
+        # Process status entry widget
         self.status_var = tkinter.StringVar(self.root)
         self.status_label = tkinter.Label(
             self.root, textvariable=self.status_var
         )
 
+        # Process details entry widget
         self.details_var = tkinter.StringVar(self.root)
         self.details_entry = tkinter.Entry(
             self.root, textvariable=self.details_var,
             state="readonly", width=100
         )
 
+        # Widgets for uploading file from computer
         self.upload_button = tkinter.Button(
             self.root, text="Upload File", command=self.upload_file
         )
@@ -64,15 +68,18 @@ class Interface(Organizer):
             state="readonly", width=100
         )
 
+        # Button for user to organize data
         self.organize_button = tkinter.Button(
             self.root, text="Organize Data",
             state="disabled", command=self.organize_data
         )
 
+        # Button to quit application window
         self.end_task_button = tkinter.Button(
             self.root, text="End Task", command=self.root.destroy
         )
 
+        # Widgets for downloading resultant file to computer
         self.download_button = tkinter.Button(
             self.root, text="Download File",
             state="disabled", command=self.download_file
@@ -83,11 +90,14 @@ class Interface(Organizer):
             state="readonly", width=100
         )
 
+        # Button for reseting process
         self.reset_button = tkinter.Button(
             self.root, text="Reset", command=self.reset_interface
         )
 
     def display(self):
+        """ Grid all widgets to the application root and run mainloop
+"""
         self.upload_button.grid(row=0, column=0, sticky="w")
         self.upload_entry.grid(row=0, column=1, sticky="w")
         self.end_task_button.grid(row=0, column=2, sticky="e")
@@ -102,9 +112,13 @@ class Interface(Organizer):
         self.root.mainloop()
 
     def upload_file(self):
+        """ Prompt user to open file and call the upload classmethod
+"""
+        # Update process details
         self.details_var.set(
             value="Select a file to upload."
         )
+        # Open File Explorer prompt for user to upload CSV file
         filepath = tkinter.filedialog.askopenfilename(
             parent=self.root,
             filetypes=[("Commad Separated Values", ".csv")],
@@ -112,47 +126,61 @@ class Interface(Organizer):
                 os.path.expanduser('~'), 'downloads'
             )
         )
+        # Try to upload file and handle ProcessingError
         try:
             self.upload(filepath)
-        except self.ImproperFileTypeError:
+        except self.ProcessingError:
             self.details_var.set(
                 value="File failed to upload.\t{}".format(
                     self.details_var.get()
                 )
             )
             return
+        # Update Upload entry widget with path to file
         self.upload_var.set(value=filepath)
+        # Update process details
         self.details_var.set(
             value="File Uploaded.\t{}".format(
                 self.details_var.get()
             )
         )
+        # Enable Organize button
         self.organize_button.config(state='normal')
 
     def organize_data(self):
+        """ Call the organize classmethod
+"""
+        # Disable Organize button
         self.organize_button.config(state='disabled')
+        # Try to organize data in file and handle ProcessingError
         try:
             self.organize()
-        except self.ImproperFileTypeError:
+        except self.ProcessingError:
             self.details_var.set(
                 value="File failed to upload.\t{}".format(
                     self.details_var.get()
                 )
             )
             return
+        # Update process details
         self.details_var.set(
             value="Data Organized.\t{}".format(
                 self.details_var.get()
             )
         )
+        # Enable Download button
         self.download_button.config(state='normal')
 
     def download_file(self):
+        """ Prompt user to select file download location and call the download classmethod
+"""
+        # Update process details
         self.details_var.set(
             value="Select a location to save the file.\t{}".format(
                 self.details_var.get()
             )
         )
+        # Open File Explorer prompt for user to save data as CSV file
         filepath = tkinter.filedialog.asksaveasfilename(
             parent=self.root,
             filetypes=[("Comma Separated Values", ".csv")],
@@ -160,16 +188,19 @@ class Interface(Organizer):
                 os.path.expanduser('~'), 'downloads'
             )
         )
+        # Try to write data to CSV file, handle ProcessingError
         try:
             self.download("{}.csv".format(filepath))
-        except self.ImproperFileTypeError:
+        except self.ProcessingError:
             self.details_var.set(
                 value="File failed to download.\t{}".format(
                     self.details_var.get()
                 )
             )
             return
+        # Update Download entry widget with path to download
         self.download_var.set(value=filepath)
+        # Update process details
         self.details_var.set(
             value="File Downloaded.\t{}".format(
                 self.details_var.get()
@@ -177,6 +208,8 @@ class Interface(Organizer):
         )
 
     def reset_interface(self):
+        """ Revert application to original state
+"""
         self.status_var.set('')
         self.details_var.set('')
         self.upload_button.config(state='normal')
