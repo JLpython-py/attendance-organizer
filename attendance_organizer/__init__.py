@@ -57,7 +57,7 @@ class Organizer:
         self.values = []
         self.data = {}
 
-    class ImproperFileTypeError(Exception):
+    class ProcessingError(Exception):
         """ Raised when the file provided cannot be re-written
 
         Arguments:
@@ -72,13 +72,15 @@ class Organizer:
     def upload(self, filepath):
         """ Read store data contained in CSV file
 """
+        # Verify file uploaded is CSV file
         if not (
             filepath and os.path.splitext(filepath)[-1] == '.csv'
         ):
-            raise self.ImproperFileTypeError(
+            raise self.ProcessingError(
                 filepath,
                 process="upload"
             )
+        # Read and store file contents
         self.upload_path = filepath
         with open(self.upload_path, encoding="utf-16") as file:
             self.values = list(csv.reader(file, delimiter='\t'))
@@ -87,11 +89,14 @@ class Organizer:
     def organize(self):
         """ Reorganize data stored in the original CSV file
 """
+        # Create regular expressions for parsing file contents
         name_regex = re.compile(r'([A-Z][A-Za-z]+) ([A-Z][A-Za-z]+)')
         action_regex = re.compile(r'(Joined|Left)')
         dt_format = '%m/%d/%Y, %I:%M:%S %p'
         data = {}
+        # Parse each row in file contents
         for row in self.values:
+            # Try to extract information with regular expressions, handle errors
             try:
                 raw_name = name_regex.search(row[0])
                 raw_action = action_regex.search(row[1])
@@ -101,27 +106,31 @@ class Organizer:
                     row[2], dt_format
                 ).strftime('%m.%d.%Y %H:%M:%S')
             except (AttributeError, IndexError, ValueError) as error:
-                raise self.ImproperFileTypeError(
+                raise self.ProcessingError(
                     self.upload_path,
                     "organize",
                 ) from error
-            key = ', '.join([last, first])
+            # Add extracted data to dictionary
+            key = ', '.join([last, first])  # Key: Lastname, Firstname
             data.setdefault(
                 key, {"Last": last, "First": first}
             )
             data[key].setdefault(action, time)
+        # Sort data by key
         self.data = {k: data[k] for k in sorted(list(data))}
 
     def download(self, filepath):
         """ Write reorganized data to a CSV file
 """
+        # Verify file name is CSV file
         if not (
             os.path.splitext(filepath)[-1] == '.csv'
         ):
-            raise self.ImproperFileTypeError(
+            raise self.ProcessingError(
                 filepath,
                 process="download"
             )
+        # Write data to file contents
         self.download_path = filepath
         with open(self.download_path, "w", encoding="utf-16", newline="") as file:
             fieldnames = ["Last", "First", "Joined", "Left"]
